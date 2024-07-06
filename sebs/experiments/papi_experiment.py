@@ -69,51 +69,21 @@ class PapiExperiment(Experiment):
         self._sebs_client = sebs_client
 
     def run(self):
-
         settings = self.config.experiment_settings(self.name())
 
-        # Execution on systems where memory configuration is not provided
-        memory_sizes = settings["memory-sizes"]
-        if len(memory_sizes) == 0:
-            self.logging.info("Begin experiment")
-            self.run_configuration(settings, settings["repetitions"])
-        for memory in memory_sizes:
-            self.logging.info(f"Begin experiment on memory size {memory}")
-            self._function.config.memory = memory
-            self._deployment_client.update_function(self._function, self._benchmark)
-            self._sebs_client.cache_client.update_function(self._function)
-            self.run_configuration(settings, settings["repetitions"], suffix=str(memory))
+        self.logging.info("Begin experiment")
+        self.run_configuration(settings, settings["repetitions"])
 
     def run_configuration(self, settings: dict, repetitions: int, suffix: str = ""):
 
         for experiment_type in settings["experiments"]:
-            if experiment_type == "cold":
-                self._run_configuration(
-                    PapiExperiment.RunType.COLD,
-                    settings,
-                    settings["concurrent-invocations"],
-                    repetitions,
-                    suffix,
-                )
-            elif experiment_type == "warm":
+            if experiment_type == "warm":
                 self._run_configuration(
                     PapiExperiment.RunType.WARM,
                     settings,
                     settings["concurrent-invocations"],
                     repetitions,
                     suffix,
-                )
-            elif experiment_type == "burst":
-                self._run_configuration(
-                    PapiExperiment.RunType.BURST,
-                    settings,
-                    settings["concurrent-invocations"],
-                    repetitions,
-                    suffix,
-                )
-            elif experiment_type == "sequential":
-                self._run_configuration(
-                    PapiExperiment.RunType.SEQUENTIAL, settings, 1, repetitions, suffix
                 )
             else:
                 raise RuntimeError(f"Unknown experiment type {experiment_type} for PapiExperiment!")
@@ -164,11 +134,6 @@ class PapiExperiment(Experiment):
                 first_iteration = True
                 while samples_gathered < repetitions:
 
-                    if run_type == PapiExperiment.RunType.COLD or run_type == PapiExperiment.RunType.BURST:
-                        self._deployment_client.enforce_cold_start(
-                            [self._function], self._benchmark
-                        )
-
                     time.sleep(5)
 
                     results = []
@@ -199,6 +164,7 @@ class PapiExperiment(Experiment):
                             error_count += 1
                             error_executions.append(str(e))
                     samples_generated += invocations
+
                     if first_iteration:
                         self.logging.info(
                             f"Processed {samples_gathered} warm-up samples, ignoring these results."
@@ -218,6 +184,7 @@ class PapiExperiment(Experiment):
                     time.sleep(5)
 
                 result.end()
+
                 out_f.write(
                     serialize(
                         {

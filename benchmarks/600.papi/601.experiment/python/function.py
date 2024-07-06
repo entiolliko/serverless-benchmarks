@@ -97,7 +97,7 @@ def measure_function(fun, config, cfg_path): # fun pointer, fun config, papi con
     repetitions = cfg['benchmark']['repetitions']
     disable_gc = cfg['benchmark']['disable_gc']
     papi_experiments = papi_benchmarker()
-    papi_all_events = cfg['benchmark']['papi']["events"] 
+    papi_all_events = check_supported_events() 
     timedata = [0] * repetitions
     try:
         start = start_benchmarking(disable_gc)
@@ -222,14 +222,12 @@ def microbenchmark_sample_run(cfg):
 	allocate(cfg)
 	workload(cfg)
 
-def handler(input_configs):
-	result = {}
+def handler(input_config):
 	papi_config_path = "config_papi/papi_config.json" 
     
-    for i in range(len(input_configs)):
-        cfg = {"workload": {}, "function_input" : {}, "readFile": {}, "disc": {}, "writeFile": {}, "memory": {}}
-        fill_function(cfg, input_configs[i])
-        results.append(measure_function(microbenchmark_sample_run, cfg, papi_config_path))
+    cfg = {"workload": {}, "function_input" : {}, "readFile": {}, "disc": {}, "writeFile": {}, "memory": {}}
+    fill_function(cfg, input_config)
+    result = measure_function(microbenchmark_sample_run, cfg, papi_config_path))
 
-    return {"result": results}	
+    return {"result": result}	
 	
