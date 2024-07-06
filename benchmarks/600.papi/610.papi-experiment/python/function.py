@@ -13,7 +13,6 @@ import gc
 import platform
 
 import numpy as np
-import speedtest
 import pypapi.exceptions
 
 
@@ -223,11 +222,15 @@ def microbenchmark_sample_run(cfg):
 	workload(cfg)
 
 def handler(input_config):
+    print("Started the function call")
 	papi_config_path = "config_papi/papi_config.json" 
     
     cfg = {"workload": {}, "function_input" : {}, "readFile": {}, "disc": {}, "writeFile": {}, "memory": {}}
-    fill_function(cfg, input_config)
+    print("Started the filling of the fun")
+    fill_function(cfg, input_config[0])
+    print("Started the measuring of the function")
     result = measure_function(microbenchmark_sample_run, cfg, papi_config_path))
 
+    print("Returning the results")
     return {"result": result}	
 	

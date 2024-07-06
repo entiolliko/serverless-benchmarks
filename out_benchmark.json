@@ -1,38 +1,61 @@
 {
   "functions": [
     {
-      "benchmark": "110.dynamic-html",
+      "benchmark": "610.papi-experiment",
       "config": {
         "architecture": "x86",
-        "memory": 128,
+        "memory": 512,
         "runtime": {
           "language": "python",
           "version": "3.7"
         },
-        "timeout": 10
+        "timeout": 120
       },
-      "hash": "f2a3c8ea36ffbbb7967c026fc690890c",
-      "instance_id": "e5e7a6c8705f288b60e60cba99a5c0e6aa3697b83b3a7c647492c856a3438842",
-      "name": "110.dynamic-html-python-3.7",
+      "hash": "97c728a6117a7388ea0448e16863af42",
+      "instance_id": "c1c90d73cdc1115e1d17c0a4722daebf255d6f8dad1a445a7a4fa122cb9110dd",
+      "name": "610.papi-experiment-python-3.7",
       "port": 9000,
       "triggers": [],
-      "url": "172.17.0.3:9000"
+      "url": "172.17.0.10:9000"
     }
   ],
   "inputs": [
-    {
-      "random_len": 10,
-      "username": "testname"
-    }
+    [
+      {
+        "disc": {
+          "block_size": 21,
+          "path_to_file": "temp/temp_file.npy"
+        },
+        "function_input": {
+          "output_size": 21
+        },
+        "memory": {
+          "size_in_bytes": 21
+        },
+        "network": {
+          "use": false
+        },
+        "workload": {
+          "array_size": 21,
+          "iterations": 700000,
+          "operator": "/",
+          "type": "float32"
+        },
+        "writeFile": {
+          "block_size": 21,
+          "path_to_file": "temp/temp_file.npy"
+        }
+      }
+    ]
   ],
   "storage": {
-    "access_key": "UfvTKIKsuveUNdtgzE2OPUx2ncT0ewvjyl5FPOvDUZY",
+    "access_key": "S0Txi3V8WgQtZZGZ7_bMUixaPpDaPTk5HBnExMoj_g8",
     "address": "172.17.0.2:9000",
     "input_buckets": [],
-    "instance_id": "19c33b95808cacf37d5e6097c8a87f852e0e16edeb0ab102a6ae8ecd68220e58",
+    "instance_id": "fb6cf6722cddb9be9706472029452e82936251ff2a766f56ba09453c20138cf4",
     "mapped_port": 9011,
     "output_buckets": [],
-    "secret_key": "631acd9c2ad72a9d273350153217540decd42fef5e09725f11384d944e9a71cf",
+    "secret_key": "75e755c35279ee9fc5d2eb620523535f4030f2142c22cff9bfe237ec4530cc77",
     "type": "minio"
   }
 }
