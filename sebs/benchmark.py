@@ -99,8 +99,10 @@ class Benchmark(LoggingBase):
     @property
     def code_location(self):
         if self.code_package:
+            self.logging.info(os.path.join(self._cache_client.cache_dir, self.code_package["location"]))
             return os.path.join(self._cache_client.cache_dir, self.code_package["location"])
         else:
+            self.logging.info(self._code_location)
             return self._code_location
 
     @property
@@ -398,7 +400,7 @@ class Benchmark(LoggingBase):
                                 "CONTAINER_GID": str(os.getgid()),
                                 "CONTAINER_USER": "docker_user",
                                 "APP": self.benchmark,
-                                "PLATFORM": self._deployment_name.upper(),
+                               "PLATFORM": self._deployment_name.upper(),
                             },
                             remove=True,
                             stdout=True,
@@ -517,6 +519,8 @@ class Benchmark(LoggingBase):
             )
         )
 
+        self.logging.info(f"Code location: {self._code_location}")
+
         # package already exists
         if self.is_cached:
             self._cache_client.update_code_package(self._deployment_name, self.language_name, self)
@@ -543,7 +547,7 @@ class Benchmark(LoggingBase):
         storage.allocate_buckets(self.benchmark, buckets)
         # Get JSON and upload data as required by benchmark
         input_config = mod.generate_input(benchmark_data_path, size, storage.input, storage.output, storage.uploader_func,)
-
+        self.logging.info(("The input is of len {length}").format(length=len(input_config)))
         return input_config
 
     """

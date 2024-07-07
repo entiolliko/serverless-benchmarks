@@ -17,4 +17,5 @@ scipy
 #
 pycurl>=7.43
 click>=7.1.2
+python-papi
 

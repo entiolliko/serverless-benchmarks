@@ -90,8 +90,9 @@ class papi_benchmarker:
         self.results = self.data
 
 def measure_function(fun, config, cfg_path): # fun pointer, fun config, papi config
-    with open(cfg_path) as config_file:
-        cfg = json.load(config_file)
+    # with open(cfg_path) as config_file:
+    #    cfg = json.load(config_file)
+    cfg = {"benchmark": {"repetitions": 3, "disable_gc": True, "papi": {"overflow_instruction_granularity": True, "overflow_buffer_size": True}, "name": "data"}, "input": {}}
 
     repetitions = cfg['benchmark']['repetitions']
     disable_gc = cfg['benchmark']['disable_gc']
@@ -157,10 +158,6 @@ def test_write(cfg):
     np.save(file_name, a)
 
 
-def test_network(cfg):
-    if cfg["network"]["use"] : s = speedtest.Speedtest()
-
-
 def create_parameters_workload(config, cfg):
     string_to_operator = {
     "+": op.add,
@@ -216,21 +213,22 @@ def fill_function(cfg, config): # Config to fill, input config
 	
 def microbenchmark_sample_run(cfg):
     test_write(cfg)
-	test_disc(cfg)
-	fill_dict(result, cfg)
-	allocate(cfg)
-	workload(cfg)
+    test_disc(cfg)
+    result = {}
+    fill_dict(result, cfg)
+    allocate(cfg)
+    workload(cfg)
 
 def handler(input_config):
     print("Started the function call")
-	papi_config_path = "config_papi/papi_config.json" 
+    papi_config_path = "config_papi/papi_config.json" 
     
     cfg = {"workload": {}, "function_input" : {}, "readFile": {}, "disc": {}, "writeFile": {}, "memory": {}}
     print("Started the filling of the fun")
     fill_function(cfg, input_config[0])
     print("Started the measuring of the function")
-    result = measure_function(microbenchmark_sample_run, cfg, papi_config_path))
+    result = measure_function(microbenchmark_sample_run, cfg, papi_config_path)
 
     print("Returning the results")
-    return {"result": result}	
+    return {"result": result, "events_monitored:": check_supported_events()}	
 	
